@@ -6,8 +6,10 @@ async function Login(evento){
     const csrf = document.querySelector("[name=csrfmiddlewaretoken]").value
 
     const resposta = await apiFetch("/api/login/", "POST", {nome: nome, senha: senha}, {"X-CSRFToken": csrf})
-
-    console.log(resposta)
+    
+    if(resposta.status == 200){
+        window.location.href = "/home"
+    }
 
 }
 

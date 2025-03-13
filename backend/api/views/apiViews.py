@@ -3,11 +3,24 @@ from django.contrib.auth import authenticate, login
 from api.models import *
 from api.serializers import *
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+# class UserViewSet(viewsets.ModelViewSet):
+#     queryset = CustomUser.objects.all()
+#     serializer_class = UserSerializer
+
+class User(APIView):
+    def get(self, request, id=None):
+
+        if id:
+            usuario = get_object_or_404(CustomUser, pk=id)
+            serializer = UserSerializer(usuario)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        usuario = CustomUser.objects.all()
+        serializer = UserSerializer(usuario, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class Login(APIView):
     def post(self, request):
