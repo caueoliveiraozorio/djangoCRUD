@@ -10,7 +10,7 @@ async function Login(evento){
     if(resposta.status == 200){
         window.location.href = "/home"
     }
-
+    
 }
 
 document.getElementById("loginForm").addEventListener("submit", Login)
