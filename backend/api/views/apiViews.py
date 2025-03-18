@@ -41,6 +41,12 @@ class User(APIView):
     
     def put(self, request, id):
         usuario = get_object_or_404(CustomUser, pk=id)
+        
+        senha = request.data.get('password',None)
+        
+        if senha and usuario.password != senha:
+            request.data['password'] = make_password(senha)
+            
         serializer = UserSerializer(usuario, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -68,3 +74,13 @@ class Login(APIView):
             return Response({"status": status.HTTP_200_OK})
         else:
             return Response({'mensagem': "Usuário não encontrado", "stauts": status.HTTP_401_UNAUTHORIZED})
+        
+class GetDadosUsuarioLogado(APIView):
+    def get(self,request):
+        
+        usuarioID = request.session.get('_auth_user_id')
+        if usuarioID:
+            usuario = CustomUser.objects.filter(id = usuarioID).first()
+            serializer = UserSerializer(usuario)
+            return Response(serializer.data)
+        return Response(usuarioID)
